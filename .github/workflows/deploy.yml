@@ -1,3 +1,4 @@
+# 📌 GitHub Actions - Déploiement Render
 name: Deploy to Render
 
 on:
@@ -13,7 +14,7 @@ jobs:
       NODE_ENV: production
 
     steps:
-      # 1️⃣ Récupération du code
+      # 1️⃣ Cloner le dépôt
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -26,12 +27,12 @@ jobs:
           sudo mv cli_v1.1.0 /usr/local/bin/render
           render --version
 
-      # 3️⃣ Configurer le workspace Render
+      # 3️⃣ Configurer le workspace Render (⚠️ SINGULIER)
       - name: Set Render workspace
         env:
           RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
         run: |
-          render workspaces set ${{ secrets.RENDER_WORKSPACE_ID }}
+          render workspace set ${{ secrets.RENDER_WORKSPACE_ID }}
 
       # 4️⃣ Déployer sur Render
       - name: Deploy to Render
