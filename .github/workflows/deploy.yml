@@ -17,16 +17,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 2️⃣ Télécharger et installer Render CLI
+      # 2️⃣ Installer Render CLI
       - name: Install Render CLI
         run: |
           curl -L https://github.com/render-oss/cli/releases/download/v1.1.0/cli_1.1.0_linux_amd64.zip -o render.zip
-          unzip -o render.zip >/dev/null   # -o = overwrite sans demander
+          unzip -o render.zip >/dev/null
           chmod +x cli_v1.1.0
           sudo mv cli_v1.1.0 /usr/local/bin/render
           render --version
 
-      # 3️⃣ Déploiement sur Render
+      # 3️⃣ Configurer le workspace Render
+      - name: Set Render workspace
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+        run: |
+          render workspaces set ${{ secrets.RENDER_WORKSPACE_ID }}
+
+      # 4️⃣ Déployer sur Render
       - name: Deploy to Render
         env:
           RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
