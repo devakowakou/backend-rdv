@@ -4,10 +4,6 @@ on:
   push:
     branches:
       - master
-    paths:
-      - 'src/**'
-      - 'package.json'
-      - 'package-lock.json'
 
 jobs:
   deploy:
@@ -21,33 +17,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 2️⃣ Installer les dépendances du projet
-      - name: Install dependencies
-        run: npm ci
-
-      # 3️⃣ Vérifier qu'on est bien en prod
-      - name: Check environment
-        run: |
-          if [ "$NODE_ENV" != "production" ]; then
-            echo "🛑 Pas en production, annulation du déploiement"
-            exit 0
-          fi
-          echo "✅ Environnement de production détecté"
-
-      # 4️⃣ Installer Render CLI via npm
+      # 2️⃣ Installer Render CLI via npm (pas unzip)
       - name: Install Render CLI
         run: |
           npm install -g @render/cli
           render --version
 
-      # 5️⃣ Déployer sur Render
+      # 3️⃣ Déploiement sur Render
       - name: Deploy to Render
         env:
           RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
-          CI: true
         run: |
-          DEPLOY_OUTPUT=$(render deploys create ${{ secrets.RENDER_SERVICE_ID }} --confirm --output json)
-          echo "$DEPLOY_OUTPUT"
-
-          DEPLOY_URL=$(echo "$DEPLOY_OUTPUT" | grep -oP '(?<="url":")[^"]*')
-          echo "🚀 Déploiement lancé sur : $DEPLOY_URL"
+          echo "🚀 Déploiement sur Render..."
+          render deploys create ${{ secrets.RENDER_SERVICE_ID }} --confirm
+          echo "✅ Déploiement terminé avec succès !"
