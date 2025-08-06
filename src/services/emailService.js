@@ -59,7 +59,6 @@ class EmailService {
     }
   }
 
-  // Envoyer un email de bienvenue
   async sendWelcomeEmail(email, firstname) {
     const mailOptions = {
       from: process.env.EMAIL_FROM,

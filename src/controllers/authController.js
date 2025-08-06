@@ -36,7 +36,6 @@ class AuthController {
     }
   }
 
-  // Connexion d'un utilisateur
   async login(req, res) {
     try {
       const { email, password } = req.body;
@@ -83,13 +82,11 @@ class AuthController {
   }
 
 
-  // Demande de réinitialisation de mot de passe
   async forgotPassword(req, res) {
     try {
       const { email } = req.body;
 
       const result = await userService.requestPasswordReset(email);
-
       res.json({
         success: true,
         message: result.message

@@ -1,6 +1,5 @@
 const rateLimit = require('express-rate-limit');
 
-// Rate limiter général
 const generalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100, 
@@ -12,7 +11,6 @@ const generalLimiter = rateLimit({
   legacyHeaders: false
 });
 
-// Rate limiter pour l'authentification (plus strict)
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, 
   max: 5, 
@@ -25,7 +23,6 @@ const authLimiter = rateLimit({
   skipSuccessfulRequests: true 
 });
 
-// Rate limiter pour la réinitialisation de mot de passe
 const resetPasswordLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
   max: 3,

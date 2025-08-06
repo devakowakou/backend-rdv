@@ -8,7 +8,6 @@ const pool = new Pool({
   }
 });
 
-// Test de connexion
 pool.on('connect', () => {
   console.log('✅ Connexion à la base de données Neon PostgreSQL établie');
 });

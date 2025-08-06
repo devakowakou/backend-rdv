@@ -1,7 +1,6 @@
 const userService = require('../services/userService');
 
 class UserController {
-  // Obtenir le profil de l'utilisateur connecté
   async getProfile(req, res) {
     try {
       const user = req.user; 
@@ -21,17 +20,12 @@ class UserController {
     }
   }
 
-  // Mettre à jour le profil de l'utilisateur connecté
   async updateProfile(req, res) {
     try {
       const userId = req.user.id;
       const updateData = req.body;
-
-      // Empêcher tout changement de rôle
       delete updateData.role;
-
       const updatedUser = await userService.updateUser(userId, updateData);
-
       res.json({
         success: true,
         message: 'Profil mis à jour avec succès',
@@ -62,17 +56,14 @@ class UserController {
     }
   }
 
-  // Obtenir un utilisateur par ID (protégé par rôle admin)
   async getUserById(req, res) {
     try {
       const { id } = req.params;
-
       const user = await userService.getUserById(id);
-
       res.json({
         success: true,
         message: 'Utilisateur récupéré avec succès',
-        data: { user }
+        user 
       });
 
     } catch (error) {
