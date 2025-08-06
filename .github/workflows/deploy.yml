@@ -21,30 +21,26 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 2️⃣ Installer les dépendances
+      # 2️⃣ Installer les dépendances du projet
       - name: Install dependencies
         run: npm ci
 
-      # 3️⃣ Vérifier que c'est bien en prod
+      # 3️⃣ Vérifier qu'on est bien en prod
       - name: Check environment
         run: |
           if [ "$NODE_ENV" != "production" ]; then
             echo "🛑 Pas en production, annulation du déploiement"
             exit 0
           fi
-          echo "✅ Environnement de production détecté, on continue..."
+          echo "✅ Environnement de production détecté"
 
-      # 4️⃣ Installer Render CLI sans demander confirmation
+      # 4️⃣ Installer Render CLI via npm
       - name: Install Render CLI
         run: |
-          RENDER_VERSION="1.1.0"
-          curl -L "https://github.com/render-oss/cli/releases/download/v${RENDER_VERSION}/cli_${RENDER_VERSION}_linux_amd64.zip" -o render.zip
-          unzip -jo render.zip cli_v${RENDER_VERSION} -d .
-          chmod +x cli_v${RENDER_VERSION}
-          sudo mv cli_v${RENDER_VERSION} /usr/local/bin/render
+          npm install -g @render/cli
           render --version
 
-      # 5️⃣ Déploiement sur Render
+      # 5️⃣ Déployer sur Render
       - name: Deploy to Render
         env:
           RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
