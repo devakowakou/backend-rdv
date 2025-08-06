@@ -17,7 +17,7 @@ class AuthController {
 
       const user = await userService.createUser(userData);
 
-      emailService.sendWelcomeEmail(user.email, user.firstname).catch(err => {
+      emailService.sendWelcomeEmail(user.email, user.username).catch(err => {
         console.error('Erreur envoi email de bienvenue:', err);
       });
 
@@ -119,9 +119,6 @@ class AuthController {
       res.json({
         success: true,
         message: 'Mot de passe réinitialisé avec succès',
-        data: {
-          user
-        }
       });
 
     } catch (error) {

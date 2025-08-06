@@ -14,7 +14,7 @@ class EmailService {
   }
 
   async sendPasswordResetEmail(email, username, token) {
-    const resetUrl = `${process.env.BASE_URL}/reset-password?token=${token}`;
+    const resetUrl = `${process.env.FRONT_END_URL}/reset-password?token=${token}`;
     
     const mailOptions = {
       from: process.env.EMAIL_FROM,
@@ -59,14 +59,14 @@ class EmailService {
     }
   }
 
-  async sendWelcomeEmail(email, firstname) {
+  async sendWelcomeEmail(email, username) {
     const mailOptions = {
       from: process.env.EMAIL_FROM,
       to: email,
       subject: 'Bienvenue !',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #333;">Bienvenue ${firstname} !</h2>
+          <h2 style="color: #333;">Bienvenue ${username} !</h2>
           
           <p>Votre compte a été créé avec succès.</p>
           
