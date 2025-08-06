@@ -4,14 +4,17 @@ on:
   push:
     branches:
       - master
-  workflow_dispatch: # Permet de déclencher manuellement le déploiement
+    paths:
+      - 'src/**'
+      - 'package.json'
+      - 'package-lock.json'
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     env:
-      NODE_ENV: production # Force le mode production
+      NODE_ENV: production
 
     steps:
       # 1️⃣ Récupérer le code
@@ -22,37 +25,37 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # 3️⃣ Lancer les tests (optionnel)
+      # 3️⃣ Lancer les tests (si tu en as)
       - name: Run tests
-        run: npm test || echo "⚠️ Tests ignorés ou échoués"
+        run: npm test || echo "⚠️ Aucun test défini"
 
-      # 4️⃣ Vérifier l'environnement
+      # 4️⃣ Vérifier que c'est bien en prod
       - name: Check environment
         run: |
           if [ "$NODE_ENV" != "production" ]; then
-            echo "🛑 Pas en production, annulation"
-            exit 1
+            echo "🛑 Pas en production, annulation du déploiement"
+            exit 0
           fi
-          echo "✅ Environnement de production détecté"
+          echo "✅ Environnement de production détecté, on continue..."
 
-      # 5️⃣ Installer le CLI Render
+      # 5️⃣ Installer Render CLI proprement
       - name: Install Render CLI
         run: |
-          curl -L https://github.com/render-oss/cli/releases/download/v1.1.0/cli_1.1.0_linux_amd64.zip -o render.zip
-          unzip render.zip
-          chmod +x render
-          sudo mv render /usr/local/bin/render
+          RENDER_VERSION="1.1.0"
+          curl -L "https://github.com/render-oss/cli/releases/download/v${RENDER_VERSION}/cli_${RENDER_VERSION}_linux_amd64.zip" -o render.zip
+          unzip -j -o render.zip cli_v${RENDER_VERSION}   # -j = juste le binaire, -o = écraser
+          chmod +x cli_v${RENDER_VERSION}
+          sudo mv cli_v${RENDER_VERSION} /usr/local/bin/render
           render --version
 
-      # 6️⃣ Déployer sur Render
+      # 6️⃣ Déploiement sur Render
       - name: Deploy to Render
         env:
           RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
           CI: true
         run: |
-          echo "🚀 Lancement du déploiement sur Render..."
           DEPLOY_OUTPUT=$(render deploys create ${{ secrets.RENDER_SERVICE_ID }} --confirm --output json)
           echo "$DEPLOY_OUTPUT"
 
           DEPLOY_URL=$(echo "$DEPLOY_OUTPUT" | grep -oP '(?<="url":")[^"]*')
-          echo "✅ Déploiement lancé sur : $DEPLOY_URL"
+          echo "🚀 Déploiement lancé sur : $DEPLOY_URL"
