@@ -13,14 +13,17 @@ jobs:
       NODE_ENV: production
 
     steps:
-      # 1️⃣ Récupérer le code
+      # 1️⃣ Récupération du code
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 2️⃣ Installer Render CLI via npm (pas unzip)
+      # 2️⃣ Télécharger et installer Render CLI
       - name: Install Render CLI
         run: |
-          npm install -g @render/cli
+          curl -L https://github.com/render-oss/cli/releases/download/v1.1.0/cli_1.1.0_linux_amd64.zip -o render.zip
+          unzip -o render.zip >/dev/null   # -o = overwrite sans demander
+          chmod +x cli_v1.1.0
+          sudo mv cli_v1.1.0 /usr/local/bin/render
           render --version
 
       # 3️⃣ Déploiement sur Render
@@ -30,4 +33,3 @@ jobs:
         run: |
           echo "🚀 Déploiement sur Render..."
           render deploys create ${{ secrets.RENDER_SERVICE_ID }} --confirm
-          echo "✅ Déploiement terminé avec succès !"
