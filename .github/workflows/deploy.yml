@@ -1,4 +1,4 @@
-name: Deploy
+name: Deploy to Render
 
 on:
   push:
@@ -25,11 +25,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # 3️⃣ Lancer les tests (si tu en as)
-      - name: Run tests
-        run: npm test || echo "⚠️ Aucun test défini"
-
-      # 4️⃣ Vérifier que c'est bien en prod
+      # 3️⃣ Vérifier que c'est bien en prod
       - name: Check environment
         run: |
           if [ "$NODE_ENV" != "production" ]; then
@@ -38,17 +34,17 @@ jobs:
           fi
           echo "✅ Environnement de production détecté, on continue..."
 
-      # 5️⃣ Installer Render CLI proprement
+      # 4️⃣ Installer Render CLI sans demander confirmation
       - name: Install Render CLI
         run: |
           RENDER_VERSION="1.1.0"
           curl -L "https://github.com/render-oss/cli/releases/download/v${RENDER_VERSION}/cli_${RENDER_VERSION}_linux_amd64.zip" -o render.zip
-          unzip -j -o render.zip cli_v${RENDER_VERSION}   # -j = juste le binaire, -o = écraser
+          unzip -jo render.zip cli_v${RENDER_VERSION} -d .
           chmod +x cli_v${RENDER_VERSION}
           sudo mv cli_v${RENDER_VERSION} /usr/local/bin/render
           render --version
 
-      # 6️⃣ Déploiement sur Render
+      # 5️⃣ Déploiement sur Render
       - name: Deploy to Render
         env:
           RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
