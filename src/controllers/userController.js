@@ -55,6 +55,28 @@ class UserController {
       });
     }
   }
+  async deleteUser(req, res) {
+    try {
+      const userId = req.user.id;
+      await userService.deleteUser(userId);
+      res.json({
+        success: true,
+        message: 'Utilisateur supprimé avec succès',  
+      });
+    } catch (error) {
+      console.error('Erreur lors de la suppression de l\'utilisateur:', error);
+      if (error.message === 'Utilisateur non trouvé') {
+        return res.status(404).json({
+          success: false,
+          message: error.message
+        });
+      }
+      res.status(500).json({
+        success: false,
+        message: 'Erreur interne du serveur'
+      });
+    }
+  }
 
   async getUserById(req, res) {
     try {

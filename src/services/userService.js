@@ -175,6 +175,16 @@ class UserService {
     }
     return result.rows[0];
   }
+
+  async deleteUser(userId) {
+    const query = 'DELETE FROM users WHERE id = $1 RETURNING id';
+    const result = await pool.query(query, [userId]);
+    if (result.rows.length === 0) {
+      throw new Error('Utilisateur non trouvé');
+    }
+    return result.rows[0];
+  }
+
   async requestPasswordReset(email) {
     const token = this.generateResetToken();
     const user = await this.saveResetToken(email, token);

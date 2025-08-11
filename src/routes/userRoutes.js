@@ -18,6 +18,9 @@ router.put('/profile',
   userController.updateProfile
 );
 
+// Route pour supprimer l'utilisateur connecté
+router.delete('/profile', userController.deleteUser);
+
 // Route pour obtenir un utilisateur par ID
 router.get('/:id', 
   validateParams(userIdValidation),

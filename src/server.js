@@ -20,7 +20,7 @@ app.use(helmet({
 
 app.use(cors({
   origin: process.env.NODE_ENV === 'production'
-    ? 'https://getting-medical-rdv.vercel.app' 
+    ? ['https://getting-medical-rdv.vercel.app', 'http://localhost:5173']
     : ['http://localhost:5173'],
   credentials: true
 }));
